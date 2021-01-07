@@ -74,7 +74,7 @@ export class DataBuffer {
     getByteAtOffset(offset: number) {
         var size = 1;
         if (!this._canReadAt(offset, size)) {
-            throw "getByteAtOffset failed: buffer size would be exceeded";
+            throw new Error("getByteAtOffset failed: buffer size would be exceeded");
         }
         
         var intValue = this._view().getUint8(offset);
@@ -95,7 +95,7 @@ export class DataBuffer {
     getByte() {
         var size = 1;
         if (!this._canRead(size)) {
-            throw "getByte failed: buffer size would be exceeded";
+            throw new Error("getByte failed: buffer size would be exceeded");
         }
         
         var intValue = this._view().getUint8(this.__offset);
@@ -117,7 +117,7 @@ export class DataBuffer {
     getInt8(): number {
         var size = 1;
         if (!this._canRead(size)) {
-            throw "getInt8 failed: buffer size would be exceeded";
+            throw new Error("getInt8 failed: buffer size would be exceeded");
         }
         
         var intValue = this._view().getInt8(this.__offset);
@@ -139,7 +139,7 @@ export class DataBuffer {
     getInt16(): number {
         var size = 2;
         if (!this._canRead(size)) {
-            throw "getInt16 failed: buffer size would be exceeded";
+            throw new Error("getInt16 failed: buffer size would be exceeded");
         }
         
         var intValue = this._view().getInt16(this.__offset);
@@ -160,7 +160,7 @@ export class DataBuffer {
     getInt32(): number {
         var size = 4;
         if (!this._canRead(size)) {
-            throw "getInt32 failed: buffer size would be exceeded";
+            throw new Error("getInt32 failed: buffer size would be exceeded");
         }
         
         var intValue = this._view().getInt32(this.__offset);
@@ -182,7 +182,7 @@ export class DataBuffer {
     getFloat32(): number {
         var size = 4;
         if (!this._canRead(size)) {
-            throw "getFloat32 failed: buffer size would be exceeded";
+            throw new Error("getFloat32 failed: buffer size would be exceeded");
         }
         
         var floatValue = this._view().getFloat32(this.__offset);
