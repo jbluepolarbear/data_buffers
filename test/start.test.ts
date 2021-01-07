@@ -1,5 +1,5 @@
 describe('start.test', () => {
-    it('can', () => {
-        expect(null).toBeNull();
-    });
+  it('can', () => {
+    expect(null).toBeNull();
+  });
 });
