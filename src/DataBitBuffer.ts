@@ -1,4 +1,4 @@
-import { DataBuffer } from './data_buffer';
+import { DataBuffer } from './DataBuffer';
 
 export class DataBitBuffer {
   __offset: number = 0;

@@ -1,6 +1,6 @@
-import { ArrayBufferProvider } from '../src/array_buffer_provider';
-import { DataBuffer } from '../src/data_buffer';
-import { expectNotNull } from './test_util';
+import { DataBuffer } from '../src/DataBuffer';
+import { ArrayBufferProvider } from '../src/ArrayBufferProvider';
+import { expectNotNull } from './TestUtil';
 
 describe('DataBuffer', () => {
   it('can instantiate', () => {

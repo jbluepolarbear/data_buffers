@@ -1,4 +1,4 @@
-import { ArrayBufferProvider } from './array_buffer_provider';
+import { ArrayBufferProvider } from './ArrayBufferProvider';
 
 export class DataBuffer {
   __arrayBufferProvider: ArrayBufferProvider;
