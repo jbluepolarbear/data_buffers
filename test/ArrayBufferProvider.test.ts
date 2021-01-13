@@ -51,7 +51,7 @@ describe('ArrayBuffer Provider', () => {
     expectNotNull(base64);
     const sizedArrayBuffer = sut.base64ToArrayBuffer(base64);
     let outString = '';
-    {
+    if (!!sizedArrayBuffer.buffer) {
       const buffer = new Uint8Array(
         sizedArrayBuffer.buffer,
         0,
