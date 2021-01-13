@@ -1,7 +1,4 @@
-export interface SizedArrayBuffer {
-  buffer: ArrayBuffer;
-  length?: number;
-}
+import { SizedArrayBuffer } from './SizedArrayBuffer';
 
 export class ArrayBufferProvider {
   __buffers: ArrayBuffer[];
@@ -41,6 +38,9 @@ export class ArrayBufferProvider {
 
   arrayBufferToBase64(sizedArrayBuffer: SizedArrayBuffer): string {
     let binary = '';
+    if (!sizedArrayBuffer.buffer) {
+      return binary;
+    }
     const buffer = new Uint8Array(
       sizedArrayBuffer.buffer,
       0,

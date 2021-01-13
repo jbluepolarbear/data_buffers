@@ -1,4 +1,5 @@
 import { ArrayBufferProvider } from './ArrayBufferProvider';
+import { SizedArrayBuffer } from './SizedArrayBuffer';
 
 export class DataBuffer {
   __arrayBufferProvider: ArrayBufferProvider;
@@ -39,18 +40,23 @@ export class DataBuffer {
     return this.__offset;
   }
 
-  loadBuffer(buffer: ArrayBuffer, size: number | null) {
+  loadBuffer(sizedArrayBuffer: SizedArrayBuffer) {
     this.reset();
+    if (!sizedArrayBuffer.buffer) {
+      // replace with exception?
+      return;
+    }
 
-    if (!size) {
-      size = buffer.byteLength;
+    let size = sizedArrayBuffer.buffer.byteLength;
+    if (!!sizedArrayBuffer.length) {
+      size = sizedArrayBuffer.length;
     }
 
     if (size > this.length()) {
       this._growBuffer(size);
     }
 
-    let src = new Uint8Array(buffer);
+    let src = new Uint8Array(sizedArrayBuffer.buffer);
     let dst = new Uint8Array(this.__buffer as ArrayBuffer);
     // copy over data
     for (let i = 0; i < size; ++i) {

@@ -2,33 +2,34 @@ import { DataBuffer } from '../src/DataBuffer';
 import { ArrayBufferProvider } from '../src/ArrayBufferProvider';
 import { expectNotNull } from './TestUtil';
 
+const SystemUnderTest = () => new DataBuffer(new ArrayBufferProvider());
 describe('DataBuffer', () => {
   it('can instantiate', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     expectNotNull(sut);
   });
 
   it('can get default length', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     expect(sut.length()).toEqual(0);
   });
 
   it('can reset', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     sut.__offset = 100;
     sut.reset();
     expect(sut.getOffset()).toEqual(0);
   });
 
   it('can setByte', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 100;
     sut.setByte(testValue);
     expect(sut.getOffset()).toEqual(1);
   });
 
   it('can getByte', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 100;
     sut.setByte(testValue);
     sut.setOffset(0);
@@ -36,7 +37,7 @@ describe('DataBuffer', () => {
   });
 
   it('can setByteAtOffset', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 100;
     sut.setByte(testValue);
     sut.setByte(testValue);
@@ -49,7 +50,7 @@ describe('DataBuffer', () => {
   });
 
   it('can getByteAtOffset', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 100;
     sut.setByte(testValue);
     sut.setByte(testValue);
@@ -60,14 +61,14 @@ describe('DataBuffer', () => {
   });
 
   it('can setInt8', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -100;
     sut.setInt8(testValue);
     expect(sut.getOffset()).toEqual(1);
   });
 
   it('can getInt8', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -100;
     sut.setInt8(testValue);
     sut.setOffset(0);
@@ -75,14 +76,14 @@ describe('DataBuffer', () => {
   });
 
   it('can setInt16', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -1000;
     sut.setInt16(testValue);
     expect(sut.getOffset()).toEqual(2);
   });
 
   it('can getInt16', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -1000;
     sut.setInt16(testValue);
     sut.setOffset(0);
@@ -90,14 +91,14 @@ describe('DataBuffer', () => {
   });
 
   it('can setInt32', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -1000000000;
     sut.setInt32(testValue);
     expect(sut.getOffset()).toEqual(4);
   });
 
   it('can getInt32', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = -1000000000;
     sut.setInt32(testValue);
     sut.setOffset(0);
@@ -105,14 +106,14 @@ describe('DataBuffer', () => {
   });
 
   it('can setFloat32', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 3.141519;
     sut.setFloat32(testValue);
     expect(sut.getOffset()).toEqual(4);
   });
 
   it('can getFloat32', () => {
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     const testValue = 3.141519;
     sut.setFloat32(testValue);
     sut.setOffset(0);
@@ -123,7 +124,7 @@ describe('DataBuffer', () => {
 
   it('can write and get values back', () => {
     const testValues = [100, -100, -1000, -1000000000, 3.141519];
-    const sut = new DataBuffer(new ArrayBufferProvider());
+    const sut = SystemUnderTest();
     sut.setByte(testValues[0]);
     sut.setInt8(testValues[1]);
     sut.setInt16(testValues[2]);

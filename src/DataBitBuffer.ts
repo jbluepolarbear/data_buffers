@@ -1,3 +1,4 @@
+import { SizedArrayBuffer } from './SizedArrayBuffer';
 import { DataBuffer } from './DataBuffer';
 
 export class DataBitBuffer {
@@ -39,10 +40,10 @@ export class DataBitBuffer {
     return this.__offset;
   }
 
-  loadBuffer(buffer: ArrayBuffer, size: number | null) {
+  loadBuffer(sizedArrayBuffer: SizedArrayBuffer) {
     this.reset();
 
-    this.__view.loadBuffer(buffer, size);
+    this.__view.loadBuffer(sizedArrayBuffer);
 
     this.__offset = this.__view.loadLimit() * 8;
     this.__loadedLimit = this.__offset;
@@ -60,14 +61,14 @@ export class DataBitBuffer {
       bufferOffset < this.__view.getOffset() &&
       this.__view._canReadAt(bufferOffset, size)
     ) {
-      intValue = this.__view.getByteAtOffset(bufferOffset) >>> 0;
+      intValue = this.__view.getByteAtOffset(bufferOffset);
     } else {
-      intValue = this.__view.getByte() >>> 0;
+      intValue = this.__view.getByte();
     }
 
     const bitOffset = offset % 8;
 
-    const bitValue = !!((1 << (8 - bitOffset - 1)) & intValue) ? 1 : 0;
+    const bitValue = getBit(intValue, bitOffset);
 
     return bitValue;
   }
@@ -79,14 +80,14 @@ export class DataBitBuffer {
 
     const bufferOffset = Math.floor(offset / 8);
 
-    let intValue = 0 >>> 0;
+    let intValue = 0;
     if (this.__view._canReadAt(bufferOffset, size)) {
-      intValue = this.__view.getByteAtOffset(bufferOffset) >>> 0;
+      intValue = this.__view.getByteAtOffset(bufferOffset);
     }
 
     const bitOffset = offset % 8;
 
-    intValue |= ((1 & bitValue) << (8 - bitOffset - 1)) >>> 0;
+    intValue = updateBit(intValue, bitOffset, bitValue);
 
     if (bufferOffset < this.__view.getOffset()) {
       this.__view.setByteAtOffset(bufferOffset, intValue);
@@ -98,10 +99,14 @@ export class DataBitBuffer {
   }
 
   getBitsAtOffset(offset: number, count: number) {
-    let intValue = 0 >>> 0;
+    let intValue = 0;
 
     for (let i = 0; i < count; ++i) {
-      intValue |= (this.getBitAtOffset(offset + i) << (count - i - 1)) >>> 0;
+      intValue = updateBit(
+        intValue,
+        count - i - 1,
+        this.getBitAtOffset(offset + i)
+      );
     }
 
     return intValue;
@@ -109,10 +114,8 @@ export class DataBitBuffer {
 
   setBitsAtOffset(offset: number, count: number, value: number) {
     for (let i = 0; i < count; ++i) {
-      this.setBitAtOffset(
-        offset + i,
-        ((1 << (count - i - 1)) >>> 0) & (value >>> 0)
-      );
+      const bitValue = getBit(value, count - i - 1);
+      this.setBitAtOffset(offset + i, bitValue);
     }
 
     return this;
@@ -149,7 +152,8 @@ export class DataBitBuffer {
 
   getInt8() {
     const size = 8;
-    return this.getBits(size);
+    const value = this.getBits(size);
+    return correctForSign(value, size);
   }
 
   setInt16(intValue: number) {
@@ -159,7 +163,8 @@ export class DataBitBuffer {
 
   getInt16() {
     const size = 16;
-    return this.getBits(size);
+    const value = this.getBits(size);
+    return correctForSign(value, size);
   }
 
   setInt32(intValue: number) {
@@ -178,7 +183,7 @@ export class DataBitBuffer {
     assert(intValue <= max);
 
     const bits = bitsRequired(min, max);
-    const value = (intValue - min) >>> 0;
+    const value = intValue - min;
     this.setBits(bits, value);
   }
 
@@ -281,4 +286,34 @@ function assert(condition: boolean, message?: string) {
     }
     throw new Error('Assertion Failed: ' + message);
   }
+}
+
+function getBit(number: number, bitPosition: number): number {
+  return (number & (1 << bitPosition)) === 0 ? 0 : 1;
+}
+
+// function setBit(number: number, bitPosition: number): number {
+//   return number | (1 << bitPosition);
+// }
+
+// function clearBit(number: number, bitPosition: number): number {
+//   const mask = ~(1 << bitPosition);
+//   return number & mask;
+// }
+
+function updateBit(
+  number: number,
+  bitPosition: number,
+  bitValue: number
+): number {
+  const bitValueNormalized = bitValue ? 1 : 0;
+  const clearMask = ~(1 << bitPosition);
+  return (number & clearMask) | (bitValueNormalized << bitPosition);
+}
+
+function correctForSign(value: number, percision: number): number {
+  if (getBit(value, percision - 1)) {
+    return -(Math.pow(2, percision) - value);
+  }
+  return value;
 }
