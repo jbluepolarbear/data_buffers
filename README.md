@@ -1,4 +1,4 @@
-# data-buffers
+# data_buffers
 DataBuffer and DataBitBuffer built on top of ArrayBuffers that grows when needed.
 
 # ArrayBufferProvider
