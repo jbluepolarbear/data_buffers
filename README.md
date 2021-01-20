@@ -1,11 +1,20 @@
-# data_buffers
+# data-buffers
 DataBuffer and DataBitBuffer built on top of ArrayBuffers that grows when needed.
 
 # ArrayBufferProvider
+
+Provides a pool of reusable ArrayBuffers and provides the functionality to convert an ArrayBuffer to and from a base 64 string.
+
 # DataBuffer
+
+A lightweight wrapper around DataView with the ability to grow the buffer as needed.
+
 # DataBitBuffer
 
+A Data Bit Buffer View built on top of DataBuffer. Allows reading and writing values of 1-32 bits.
+
 Usage:
+
     const arrayBufferProvider = new ArrayBufferProvider();
     const dataBuffer = new DataBuffer(arrayBufferProvider);
     const sut = new DataBitBuffer(dataBuffer);

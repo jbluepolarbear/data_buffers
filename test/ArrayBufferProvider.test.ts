@@ -5,6 +5,7 @@ describe('ArrayBuffer Provider', () => {
   it('can instantiate', () => {
     const sut = new ArrayBufferProvider();
     expectNotNull(sut);
+    expect(sut.getMinimumSize()).toEqual(1024);
   });
 
   it('can provide ArrayBuffer that fits size 256', () => {

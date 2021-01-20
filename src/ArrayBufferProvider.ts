@@ -2,8 +2,16 @@ import { SizedArrayBuffer } from './SizedArrayBuffer';
 
 export class ArrayBufferProvider {
   __buffers: ArrayBuffer[];
-  constructor() {
+  __minimumSize: number = 1024;
+  constructor(minimumSize?: number) {
     this.__buffers = [];
+    if (!!minimumSize) {
+      this.__minimumSize = minimumSize;
+    }
+  }
+
+  getMinimumSize(): number {
+    return this.__minimumSize;
   }
 
   getArrayBufferThatFits(size: number): ArrayBuffer {
@@ -20,6 +28,9 @@ export class ArrayBufferProvider {
     }
 
     if (index < 0) {
+      if (size < this.__minimumSize) {
+        size = this.__minimumSize;
+      }
       return new ArrayBuffer(size);
     }
 
