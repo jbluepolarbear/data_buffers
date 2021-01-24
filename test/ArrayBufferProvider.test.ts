@@ -34,7 +34,7 @@ describe('ArrayBuffer Provider', () => {
     expect(arrayBuffer).toEqual(testArrayBuffer);
   });
 
-  it('can convert SizedArrayBuffer to Base64 encoded string', () => {
+  it('can convert SizedArrayBuffer to transport string', () => {
     const sut = new ArrayBufferProvider();
     const testString = 'Hello World!';
     const requestedSize = testString.length;
@@ -45,12 +45,13 @@ describe('ArrayBuffer Provider', () => {
         buffer[i] = testString.charCodeAt(i);
       }
     }
-    const base64 = sut.arrayBufferToBase64({
+    const transportString = sut.arrayBufferToTransportString({
       buffer: testArrayBuffer,
       length: requestedSize,
     });
-    expectNotNull(base64);
-    const sizedArrayBuffer = sut.base64ToArrayBuffer(base64);
+    expectNotNull(transportString);
+
+    const sizedArrayBuffer = sut.transportStringToArrayBuffer(transportString);
     let outString = '';
     if (!!sizedArrayBuffer.buffer) {
       const buffer = new Uint8Array(

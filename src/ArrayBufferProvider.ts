@@ -47,7 +47,7 @@ export class ArrayBufferProvider {
     this.__buffers.push(arrayBuffer);
   }
 
-  arrayBufferToBase64(sizedArrayBuffer: SizedArrayBuffer): string {
+  arrayBufferToTransportString(sizedArrayBuffer: SizedArrayBuffer): string {
     let binary = '';
     if (!sizedArrayBuffer.buffer) {
       return binary;
@@ -58,19 +58,22 @@ export class ArrayBufferProvider {
       sizedArrayBuffer.length || sizedArrayBuffer.buffer.byteLength
     );
     const bufferSize = buffer.byteLength;
-    for (let i = 0; i < bufferSize; ++i) {
-      binary += String.fromCharCode(buffer[i]);
+    const chars: number[] = [];
+    for (let i = 0; i < bufferSize; ) {
+      chars.push(((buffer[i++] & 0xff) << 8) | (buffer[i++] & 0xff));
     }
-    return window.btoa(binary);
+    return String.fromCharCode.apply(null, chars);
   }
 
-  base64ToArrayBuffer(base64: string): SizedArrayBuffer {
-    const binaryStr = window.atob(base64);
-    const bufferSize = binaryStr.length;
+  transportStringToArrayBuffer(transportString: string): SizedArrayBuffer {
+    const transportSize = transportString.length;
+    const bufferSize = transportSize * 2;
     const arrayBuffer = this.getArrayBufferThatFits(bufferSize);
     const buffer = new Uint8Array(arrayBuffer, 0, bufferSize);
-    for (let i = 0; i < bufferSize; ++i) {
-      buffer[i] = binaryStr.charCodeAt(i);
+    for (let i = 0, bi = 0; i < transportSize; ++i) {
+      var char = transportString.charCodeAt(i);
+      buffer[bi++] = char >>> 8;
+      buffer[bi++] = char & 0xff;
     }
     return {
       buffer: buffer.buffer,

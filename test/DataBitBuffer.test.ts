@@ -168,12 +168,12 @@ describe('DataBitBuffer', () => {
       testValues.push(value);
     }
 
-    var packed = arrayBufferProvider.arrayBufferToBase64({
+    var packed = arrayBufferProvider.arrayBufferToTransportString({
       buffer: sut.getArrayBuffer(),
       length: sut.getArrayBufferOffset(),
     });
 
-    var result = arrayBufferProvider.base64ToArrayBuffer(packed);
+    var result = arrayBufferProvider.transportStringToArrayBuffer(packed);
     sut.loadBuffer(result);
     arrayBufferProvider.giveArrayBufferBack(result.buffer);
     sut.setOffset(0);

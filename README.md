@@ -1,6 +1,9 @@
 # data_buffers
 DataBuffer and DataBitBuffer built on top of ArrayBuffers that grows when needed.
 
+github: https://github.com/jbluepolarbear/data_buffers
+npm: https://www.npmjs.com/package/data_buffers
+
 # ArrayBufferProvider
 
 Provides a pool of reusable ArrayBuffers and provides the functionality to convert an ArrayBuffer to and from a base 64 string.
@@ -47,12 +50,12 @@ Usage:
       testValues.push(value);
     }
 
-    var packed = arrayBufferProvider.arrayBufferToBase64({
+    var packed = arrayBufferProvider.arrayBufferToTransportString({
       buffer: sut.getArrayBuffer(),
       length: sut.getArrayBufferOffset(),
     });
 
-    var result = arrayBufferProvider.base64ToArrayBuffer(packed);
+    var result = arrayBufferProvider.transportStringToArrayBuffer(packed);
     sut.loadBuffer(result);
     arrayBufferProvider.giveArrayBufferBack(result.buffer);
     sut.setOffset(0);
