@@ -198,8 +198,8 @@ export class DataBitBuffer {
   unsignedRangeBitsLimit(rangeBits: number[]) {
     assert(rangeBits.length > 0);
     let rangeLimit = 0;
-    for (let i = 0; i < rangeBits.length - 1; ++i) {
-      rangeLimit += powerOf2(rangeBits[i]);
+    for (let i = 0; i < rangeBits.length; ++i) {
+      rangeLimit += 1 << rangeBits[i];
     }
     return rangeLimit;
   }
@@ -207,21 +207,21 @@ export class DataBitBuffer {
   setUnsignedRangeBits(rangeBits: number[], value: number) {
     assert(rangeBits.length > 0);
     let rangeMin = 0;
-    let index = 0;
-    for (index = 0; index < rangeBits.length; ++index) {
-      const rangeMax = rangeMin + powerOf2(rangeBits[index]) - 1;
+    const rangeLength = rangeBits.length;
+    for (let i = 0; i < rangeLength - 1; ++i) {
+      const rangeMax = rangeMin + (1 << rangeBits[i]);
       const inRange = value <= rangeMax;
       this.setBool(inRange);
       if (inRange) {
         this.setIntRange(rangeMin, rangeMax, value);
         return this;
       }
-      rangeMin += powerOf2(rangeBits[index]);
+      rangeMin += 1 << rangeBits[i];
     }
 
     this.setIntRange(
       rangeMin,
-      rangeMin + powerOf2(rangeBits[index]) - 1,
+      rangeMin + (1 << rangeBits[rangeLength - 1]),
       value
     );
     return this;
@@ -230,19 +230,19 @@ export class DataBitBuffer {
   getUnsignedRangeBits(rangeBits: number[]) {
     assert(rangeBits.length > 0);
     let rangeMin = 0;
-    let index = 0;
-    for (index = 0; index < rangeBits.length; ++index) {
-      const rangeMax = rangeMin + powerOf2(rangeBits[index]) - 1;
+    const rangeLength = rangeBits.length;
+    for (let i = 0; i < rangeLength - 1; ++i) {
+      const rangeMax = rangeMin + (1 << rangeBits[i]);
       const inRange = this.getBool();
       if (inRange) {
         return this.getIntRange(rangeMin, rangeMax);
       }
-      rangeMin += powerOf2(rangeBits[index]);
+      rangeMin += 1 << rangeBits[i];
     }
 
     return this.getIntRange(
       rangeMin,
-      rangeMin + powerOf2(rangeBits[index]) - 1
+      rangeMin + (1 << rangeBits[rangeLength - 1])
     );
   }
 
@@ -271,13 +271,18 @@ export class DataBitBuffer {
   }
 }
 
+export function signedToUnsigned(n: number) {
+  return ((n << 1) ^ (n >> 31)) >>> 0;
+}
+
+export function unsignedToSigned(n: number) {
+  n = n >>> 0;
+  return (n >> 1) ^ -(n & (1 >>> 0));
+}
+
 export function bitsRequired(min: number, max: number) {
   const log2 = Math.log(max - min) / Math.log(2);
   return min === max ? 0 : Math.floor(log2 + 1);
-}
-
-function powerOf2(power: number) {
-  return Math.pow(2, power);
 }
 
 function assert(condition: boolean, message?: string) {

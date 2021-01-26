@@ -1,4 +1,9 @@
-import { bitsRequired, DataBitBuffer } from '../src/DataBitBuffer';
+import {
+  bitsRequired,
+  DataBitBuffer,
+  signedToUnsigned,
+  unsignedToSigned,
+} from '../src/DataBitBuffer';
 import { DataBuffer } from '../src/DataBuffer';
 import { ArrayBufferProvider } from '../src/ArrayBufferProvider';
 import { expectNotNull } from './TestUtil';
@@ -219,6 +224,96 @@ describe('DataBitBuffer', () => {
     sut.setIntRange(minValue, maxValue, testValue);
     sut.setOffset(0);
     expect(sut.getIntRange(minValue, maxValue)).toEqual(testValue);
+  });
+
+  it('can signedToUnsigned', () => {
+    const testValue = -63;
+    const unsigned = signedToUnsigned(testValue);
+    expect(unsigned).toEqual(125);
+  });
+
+  it('can unsignedToSigned', () => {
+    const testValue = 125;
+    const unsigned = unsignedToSigned(testValue);
+    expect(unsigned).toEqual(-63);
+  });
+
+  it('can signedToUnsigned', () => {
+    const testValue = -63090;
+    const unsigned = signedToUnsigned(testValue);
+    expect(unsigned).toEqual(126179);
+  });
+
+  it('can unsignedToSigned', () => {
+    const testValue = 126179;
+    const unsigned = unsignedToSigned(testValue);
+    expect(unsigned).toEqual(-63090);
+  });
+
+  it('can unsignedRangeBitsLimit', () => {
+    const sut = SystemUnderTest();
+    const limit = sut.unsignedRangeBitsLimit([5, 6, 7]);
+    expect(limit).toEqual(224);
+  });
+
+  it('can unsignedRangeBitsLimit', () => {
+    const sut = SystemUnderTest();
+    const limit = sut.unsignedRangeBitsLimit([8, 16, 24]);
+    expect(limit).toEqual(16843008);
+  });
+
+  it('can unsignedRangeBitsLimit', () => {
+    const sut = SystemUnderTest();
+    const limit = sut.unsignedRangeBitsLimit([1, 2, 3, 4]);
+    expect(limit).toEqual(30);
+  });
+
+  it('can unsignedRangeBitsLimit', () => {
+    const sut = SystemUnderTest();
+    const limit = sut.unsignedRangeBitsLimit([10, 12, 14]);
+    expect(limit).toEqual(21504);
+  });
+
+  it('can setUnsignedRangeBits', () => {
+    const sut = SystemUnderTest();
+    const range = [5, 6, 7];
+    const testValue = 45;
+    sut.setUnsignedRangeBits(range, testValue);
+    expect(sut.getOffset()).toEqual(9);
+  });
+
+  it('can setUnsignedRangeBits', () => {
+    const sut = SystemUnderTest();
+    const range = [10, 12, 14];
+    const testValue = 500;
+    sut.setUnsignedRangeBits(range, testValue);
+    expect(sut.getOffset()).toEqual(12);
+  });
+
+  it('can setUnsignedRangeBits', () => {
+    const sut = SystemUnderTest();
+    const range = [10, 12, 14];
+    const testValue = 21504;
+    sut.setUnsignedRangeBits(range, testValue);
+    expect(sut.getOffset()).toEqual(17);
+  });
+
+  it('can getUnsignedRangeBits', () => {
+    const sut = SystemUnderTest();
+    const range = [5, 6, 7];
+    const testValue = 45;
+    sut.setUnsignedRangeBits(range, testValue);
+    sut.setOffset(0);
+    expect(sut.getUnsignedRangeBits(range)).toEqual(testValue);
+  });
+
+  it('can getUnsignedRangeBits', () => {
+    const sut = SystemUnderTest();
+    const range = [10, 12, 14];
+    const testValue = 500;
+    sut.setUnsignedRangeBits(range, testValue);
+    sut.setOffset(0);
+    expect(sut.getUnsignedRangeBits(range)).toEqual(testValue);
   });
 
   it('can run full integration', () => {
