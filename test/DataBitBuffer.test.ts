@@ -1,4 +1,4 @@
-import { DataBitBuffer } from '../src/DataBitBuffer';
+import { bitsRequired, DataBitBuffer } from '../src/DataBitBuffer';
 import { DataBuffer } from '../src/DataBuffer';
 import { ArrayBufferProvider } from '../src/ArrayBufferProvider';
 import { expectNotNull } from './TestUtil';
@@ -133,6 +133,92 @@ describe('DataBitBuffer', () => {
     sut.setInt32(testValue);
     sut.setOffset(0);
     expect(sut.getInt32()).toEqual(testValue);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 4294967295;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(32);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 16777215;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(24);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 1023;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(10);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 511;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(9);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 255;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(8);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 127;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(7);
+  });
+
+  it('can get bitsRequired', () => {
+    const testValue = 63;
+    const bits = bitsRequired(0, testValue);
+    expect(bits).toEqual(6);
+  });
+
+  it('can setIntRange', () => {
+    const sut = SystemUnderTest();
+    const maxValue = 1023;
+    const testValue = 1023;
+    sut.setIntRange(0, maxValue, testValue);
+    expect(sut.getOffset()).toEqual(10);
+  });
+
+  it('can setIntRange', () => {
+    const sut = SystemUnderTest();
+    const maxValue = 2047;
+    const testValue = 2047;
+    sut.setIntRange(0, maxValue, testValue);
+    expect(sut.getOffset()).toEqual(11);
+  });
+
+  it('can getIntRange', () => {
+    const sut = SystemUnderTest();
+    const maxValue = 1023;
+    const testValue = 1023;
+    sut.setIntRange(0, maxValue, testValue);
+    sut.setOffset(0);
+    expect(sut.getIntRange(0, maxValue)).toEqual(testValue);
+  });
+
+  it('can getIntRange', () => {
+    const sut = SystemUnderTest();
+    const maxValue = 2047;
+    const testValue = 2047;
+    sut.setIntRange(0, maxValue, testValue);
+    sut.setOffset(0);
+    expect(sut.getIntRange(0, maxValue)).toEqual(testValue);
+  });
+
+  it('can getIntRange', () => {
+    const sut = SystemUnderTest();
+    const minValue = 512;
+    const maxValue = 2047;
+    const testValue = 2047;
+    sut.setIntRange(minValue, maxValue, testValue);
+    sut.setOffset(0);
+    expect(sut.getIntRange(minValue, maxValue)).toEqual(testValue);
   });
 
   it('can run full integration', () => {

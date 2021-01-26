@@ -271,8 +271,9 @@ export class DataBitBuffer {
   }
 }
 
-function bitsRequired(min: number, max: number) {
-  return min === max ? 0 : Math.floor(Math.log(max - min) / Math.log(2) + 1.0);
+export function bitsRequired(min: number, max: number) {
+  const log2 = Math.log(max - min) / Math.log(2);
+  return min === max ? 0 : Math.floor(log2 + 1);
 }
 
 function powerOf2(power: number) {
